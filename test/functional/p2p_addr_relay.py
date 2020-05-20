@@ -30,11 +30,17 @@ for i in range(10):
 
 
 class AddrReceiver(P2PInterface):
-    def on_addr(self, message):
+    addrv2_received = False
+
+    def __init__(self):
+        super().__init__(support_addrv2 = True)
+
+    def on_addrv2(self, message):
         for addr in message.addrs:
             assert_equal(addr.nServices, 9)
             assert addr.ip.startswith('123.123.123.')
             assert (8333 <= addr.port < 8343)
+        self.addrv2_received = True
 
 
 class AddrTest(BitcoinTestFramework):
@@ -58,11 +64,13 @@ class AddrTest(BitcoinTestFramework):
         with self.nodes[0].assert_debug_log([
                 'Added 10 addresses from 127.0.0.1: 0 tried',
                 'received: addr (301 bytes) peer=0',
-                'sending addr (301 bytes) peer=1',
+                'sending addrv2 (131 bytes) peer=1',
         ]):
             addr_source.send_and_ping(msg)
             self.nodes[0].setmocktime(int(time.time()) + 30 * 60)
             addr_receiver.sync_with_ping()
+
+        assert addr_receiver.addrv2_received
 
 
 if __name__ == '__main__':
