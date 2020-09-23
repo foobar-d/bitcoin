@@ -23,14 +23,14 @@ BOOST_AUTO_TEST_CASE(base64_testvectors)
 
     // Decoding strings with embedded NUL characters should fail
     bool failure;
-    (void)DecodeBase64(std::string("invalid", 7), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
-    (void)DecodeBase64(std::string("nQB/pZw=", 8), &failure);
-    BOOST_CHECK_EQUAL(failure, false);
+    (void)DecodeBase64(std::string("invalid", 8), &failure);
+    BOOST_CHECK(failure);
+    (void)DecodeBase64(std::string("nQB/pZw="), &failure);
+    BOOST_CHECK(!failure);
     (void)DecodeBase64(std::string("nQB/pZw=\0invalid", 16), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
-    (void)DecodeBase64(std::string("nQB/pZw=invalid", 15), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
+    BOOST_CHECK(failure);
+    (void)DecodeBase64(std::string("nQB/pZw=invalid", 16), &failure);
+    BOOST_CHECK(failure);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

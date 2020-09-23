@@ -23,14 +23,14 @@ BOOST_AUTO_TEST_CASE(base32_testvectors)
 
     // Decoding strings with embedded NUL characters should fail
     bool failure;
-    (void)DecodeBase32(std::string("invalid", 7), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
-    (void)DecodeBase32(std::string("AWSX3VPP", 8), &failure);
-    BOOST_CHECK_EQUAL(failure, false);
+    (void)DecodeBase32(std::string("invalid", 8), &failure);
+    BOOST_CHECK(failure);
+    (void)DecodeBase32(std::string("AWSX3VPP"), &failure);
+    BOOST_CHECK(!failure);
     (void)DecodeBase32(std::string("AWSX3VPP\0invalid", 16), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
-    (void)DecodeBase32(std::string("AWSX3VPPinvalid", 15), &failure);
-    BOOST_CHECK_EQUAL(failure, true);
+    BOOST_CHECK(failure);
+    (void)DecodeBase32(std::string("AWSX3VPPinvalid", 16), &failure);
+    BOOST_CHECK(failure);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
