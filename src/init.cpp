@@ -1944,11 +1944,15 @@ bool AppInitMain(const util::Ref& context, NodeContext& node, interfaces::BlockA
     connOptions.nMaxOutboundLimit = nMaxOutboundLimit;
     connOptions.m_peer_connect_timeout = peer_connect_timeout;
 
+    // Port to bind to if `-bind=addr` is provided without a `:port` suffix.
+    const uint16_t default_bind_port =
+        static_cast<uint16_t>(gArgs.GetArg("-port", Params().GetDefaultPort()));
+
     for (const std::string& bind_arg : args.GetArgs("-bind")) {
         CService bind_addr;
         const size_t index = bind_arg.rfind('=');
         if (index == std::string::npos) {
-            if (Lookup(bind_arg, bind_addr, GetListenPort(), false)) {
+            if (Lookup(bind_arg, bind_addr, default_bind_port, false)) {
                 connOptions.vBinds.push_back(bind_addr);
                 continue;
             }

@@ -2422,6 +2422,10 @@ void PeerManager::ProcessMessage(CNode& pfrom, const std::string& msg_type, CDat
                     LogPrint(BCLog::NET, "ProcessMessages: advertising address %s\n", addr.ToString());
                     pfrom.PushAddress(addr, insecure_rand);
                 } else if (IsPeerAddrLocalGood(&pfrom)) {
+                    // Override just the address with whatever the peer sees us as.
+                    // Leave the port in addr as it was returned by GetLocalAddress()
+                    // above because this is outbound connection and the peer cannot
+                    // observe our listening port.
                     addr.SetIP(addrMe);
                     LogPrint(BCLog::NET, "ProcessMessages: advertising address %s\n", addr.ToString());
                     pfrom.PushAddress(addr, insecure_rand);
