@@ -1918,8 +1918,6 @@ bool AppInitMain(const util::Ref& context, NodeContext& node, interfaces::BlockA
     }
     LogPrintf("nBestHeight = %d\n", chain_active_height);
 
-    Discover();
-
     // Map ports with UPnP
     if (args.GetBoolArg("-upnp", DEFAULT_UPNP)) {
         StartMapPort();
@@ -1986,6 +1984,12 @@ bool AppInitMain(const util::Ref& context, NodeContext& node, interfaces::BlockA
         bilingual_str error;
         if (!NetWhitebindPermissions::TryParse(strBind, whitebind, error)) return InitError(error);
         connOptions.vWhiteBinds.push_back(whitebind);
+    }
+
+    if (connOptions.vBinds.empty() && connOptions.vWhiteBinds.empty()) {
+        // Only add all IP addresses on the machine if we would be listening on
+        // any address (0.0.0.0, aka *). See CConnman::InitBinds().
+        Discover();
     }
 
     for (const auto& net : args.GetArgs("-whitelist")) {

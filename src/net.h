@@ -603,7 +603,15 @@ private:
     friend struct CConnmanTest;
     friend struct ConnmanTestMsg;
 };
+
+/**
+ * Lookup IP addresses from all interfaces on the machine and add them to the
+ * list of local addresses for self-advertise.
+ * The loopback interface is skipped and only the first address from each
+ * interface is used.
+ */
 void Discover();
+
 void StartMapPort();
 void InterruptMapPort();
 void StopMapPort();
